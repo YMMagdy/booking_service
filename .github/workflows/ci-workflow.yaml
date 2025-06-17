@@ -1,0 +1,23 @@
+name: Build and Security Scan
+
+on:
+  push:
+    branches:
+    - main
+    - '!master'
+  pull_request:
+    branches:
+    - main
+    - '!master'
+  
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: repo checkout
+        uses: actions/checkout@4
+      - name: list files
+        run: |
+          ls -al
+
+
