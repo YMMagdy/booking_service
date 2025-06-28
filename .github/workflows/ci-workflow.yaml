@@ -77,7 +77,7 @@ jobs:
           git push origin "$new_version"
       - name: Code Obfuscation
         run: |
-          pip install -r requirements.txt
+          pip install package-obfuscator
           package-obfuscate .
       - name: View code after Obfuscation
         run: cat main.py
@@ -85,6 +85,18 @@ jobs:
         run: |
           docker build -t fast-trial:${{steps.latest_tag.outputs.tag}} .
           docker image ls
+            - name: Docker Login
+      - name: Snyk Image Vulnerability scan
+        uses: snyk/actions/node@master
+        env: # Omitted `continue-on-error: true` to fail the pipeline in case of an error
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      # - name: docker push to ACR
+      #   uses: azure/docker-login@v1
+      #   with:
+      #     login-server: ${{ secrets.AZURE_URL }}
+      #     username: ${{ secrets.ACR_USERNAME }}
+      #     password: ${{ secrets.ACR_PASSWORD }}
   
 
 
