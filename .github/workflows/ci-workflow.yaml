@@ -88,7 +88,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: 'fast-trial:${{steps.latest_tag.outputs.tag}}'
+          image-ref: '${{secrets.ACR_NAME}}.azurecr.io/fast-trial:${{steps.latest_tag.outputs.tag}}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -105,7 +105,7 @@ jobs:
           az acr login --name ${{ secrets.ACR_NAME }}
       - name: docker push to ACR
         run: |
-          docker push ${{secrets.ACR_NAME}}.azurecr.io/flaskapp:${{steps.latest_tag.outputs.tag}}
+          docker push ${{secrets.ACR_NAME}}.azurecr.io/fast-trial:${{steps.latest_tag.outputs.tag}}
       # - name: docker push to ACR
       #   uses: azure/docker-login@v1
       #   with:
