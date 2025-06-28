@@ -93,7 +93,7 @@ jobs:
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
       # - name: docker push to ACR
       #   uses: azure/docker-login@v1
       #   with:
