@@ -85,6 +85,9 @@ jobs:
         run: |
           docker build -t fast-trial:${{steps.latest_tag.outputs.tag}} .
           docker image ls
+      - name: install dependecies
+        run: |
+          pip3 install -r requirements.txt
       - name: Snyk Image Vulnerability scan
         uses: snyk/actions/node@master
         env: # Omitted `continue-on-error: true` to fail the pipeline in case of an error
