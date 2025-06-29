@@ -126,7 +126,7 @@ jobs:
 
   deploy_helm_chart:
     needs: [checkout_and_build]
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - name: Login to Azure using OIDC
         uses: Azure/login@v2.3.0
