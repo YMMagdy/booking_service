@@ -31,11 +31,17 @@ jobs:
         mv microservice/* .
         rm -rf microservice
         ls -lah
-    - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@master
+    - name: Snyk Scan
+      uses: snyk/actions/python@master
       env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+          args: --severity-threshold=critical
+    # - name: SonarQube Scan
+    #   uses: sonarsource/sonarqube-scan-action@master
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
     # - name: SonarQube Quality Gate check
     #   id: sonarqube-quality-gate-check
