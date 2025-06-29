@@ -164,6 +164,7 @@ jobs:
 
   notify:
     runs-on: ubuntu-latest
+    needs: [snyk, checkout_and_build, deploy_helm_chart]
     if: ${{ success() }}
     steps:
       - name: Send mail
