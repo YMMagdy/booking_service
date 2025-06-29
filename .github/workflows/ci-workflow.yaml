@@ -98,8 +98,6 @@ jobs:
         run: |
           pip install package-obfuscator
           package-obfuscate .
-      - name: View code after Obfuscation
-        run: cat main.py
       - name: docker build
         run: |
           docker build -t ${{secrets.ACR_NAME}}.azurecr.io/fast-trial:${{steps.latest_tag.outputs.tag}} .
