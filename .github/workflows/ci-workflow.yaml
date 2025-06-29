@@ -160,7 +160,7 @@ jobs:
       - name: Deploy helm chart
         run: |
           helm upgrade --install my-app ./flask-application-helm-chart \
-          --set image.repository=${{secrets.ACR_NAME}}.azurecr.io/fast-trial:${{ needs.checkout_and_build.outputs.build_tag }}
+          --set image.repository=${{secrets.ACR_NAME}}.azurecr.io/fast-trial --set image.tag=${{ needs.checkout_and_build.outputs.build_tag }}
 
   
 
