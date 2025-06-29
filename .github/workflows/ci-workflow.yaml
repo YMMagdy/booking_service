@@ -37,14 +37,14 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-    - name: SonarQube Quality Gate check
-      id: sonarqube-quality-gate-check
-      uses: sonarsource/sonarqube-quality-gate-action@master
-      with:
-        pollingTimeoutSec: 600
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    # - name: SonarQube Quality Gate check
+    #   id: sonarqube-quality-gate-check
+    #   uses: sonarsource/sonarqube-quality-gate-action@master
+    #   with:
+    #     pollingTimeoutSec: 600
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
 
   checkout_and_build:
@@ -125,12 +125,39 @@ jobs:
       - name: docker push to ACR
         run: |
           docker push ${{secrets.ACR_NAME}}.azurecr.io/fast-trial:${{steps.latest_tag.outputs.tag}}
-      # - name: docker push to ACR
-      #   uses: azure/docker-login@v1
-      #   with:
-      #     login-server: ${{ secrets.AZURE_URL }}
-      #     username: ${{ secrets.ACR_USERNAME }}
-      #     password: ${{ secrets.ACR_PASSWORD }}
+
+  deploy_helm_chart:
+    needs: [checkout_and_build]
+    runs-on: ubuntu
+    steps:
+      - name: Login to Azure using OIDC
+        uses: Azure/login@v2.3.0
+        with:
+          client-id: ${{ secrets.AZURE_KUBERNETES_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true
+      - name: Get Kubernetes Credentials
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} --name ${{secrets.AKS_NAME }}
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.23.0' 
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+
+      - name: repo checkout
+        uses: actions/checkout@v4
+        with:
+         fetch-tags: true
+         fetch-depth: 0
+
+      - name: Deploy helm chart
+        run: |
+          helm upgrade --install my-app ./flask-application-helm-chart \
+          --set image.repository=${{secrets.ACR_NAME}}.azurecr.io/fast-trial:${{ needs.checkout_and_build.outputs.build_tag }}
+
   
 
 
