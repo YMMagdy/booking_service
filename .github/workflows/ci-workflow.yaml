@@ -149,7 +149,7 @@ jobs:
           version: 'v1.33.1' 
 
       - name: Install Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v4.3.0
 
       - name: repo checkout
         uses: actions/checkout@v4
@@ -164,7 +164,6 @@ jobs:
 
   notify:
     runs-on: ubuntu-latest
-    needs: checkout_and_build
     if: ${{ success() }}
     steps:
       - name: Send mail
